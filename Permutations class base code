@@ -1,0 +1,68 @@
+### this is python code
+
+import math
+
+class Permutations(object) : 
+    def __init__(self, array_of_nums) :
+        """
+        Initialize permutation instance
+        """
+        # array_of_nums = some permutation of n 
+        self.order = len(array_of_nums) 
+        assert set(array_of_nums) == set([i for i in range(1, self.order + 1)])
+        self.list = array_of_nums 
+
+    def get_order(self) : 
+        return self.order 
+    
+    def get_list(self) :
+        return self.list 
+
+    def get_val(self, i) : 
+        assert i in [i for i in range(1, self.order + 1)]
+        return self.list[i-1] 
+    
+    def set_val(self, i, val) :
+        assert val in [i for i in range(1, self.order + 1)] 
+        self.list[i] = val  
+
+    def num_of_fixed_pts(self) : 
+        ans = 0
+        for i in range(self.order) : 
+            if self.list[i] == i+1 : 
+                ans += 1 
+
+        return ans
+
+    def mult(self, other) : 
+        """
+        multiply perm self by other 
+        """
+        assert self.order == other.order
+        prod = Permutations([self.get_val(other.get_val(i)) for i in range(1, self.order + 1)]) 
+        return prod 
+    
+    def __str__(self) :
+        return str(self.list)
+    
+def give_all_perms(n) : 
+    """
+    returns a list of all permutations of order n
+    """
+    ans_list = []
+    
+    if n == 1 : 
+        ans_list.append(Permutations([1])) 
+        return ans_list 
+
+    cycle_perm_list = [i+1 for i in range(1, n)] 
+    cycle_perm_list.append(1) 
+    cycle_perm = Permutations(cycle_perm_list)
+
+    for perm in give_all_perms(n-1) : 
+        temp_perm = Permutations(perm.get_list() + [n]) 
+        ans_list.append(temp_perm) 
+        for i in range(1, n) : 
+            ans_list.append(ans_list[-1].mult(cycle_perm))  
+
+    return ans_list 
